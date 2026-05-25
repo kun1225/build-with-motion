@@ -3,18 +3,18 @@ import { motion } from 'motion/react';
 import { Leva, useControls } from 'leva';
 
 const DEFAULT_PARAMS = {
-  enterDuration: 0.25,
+  enterDuration: 0.3,
   holdDuration: 3,
-  exitDuration: 0.25,
-  enterX: -24,
-  enterY: 32,
-  exitX: 40,
-  exitY: -40,
+  exitDuration: 0.3,
+  enterX: -48,
+  enterY: 56,
+  exitX: 72,
+  exitY: -80,
   blurIn: 8,
   blurOut: 8,
-  scaleIn: 1,
+  scaleIn: 0.8,
   scaleIdle: 1,
-  scaleOut: 1.4,
+  scaleOut: 1.3,
   iconStaggerFactor: 0.5,
 };
 
@@ -45,7 +45,7 @@ function buildShadowFilter({
   blueY: number;
   opacity: number;
 }) {
-  return `blur(${blur}px) drop-shadow(${redX}px ${redY}px rgba(255,0,0,${opacity})) drop-shadow(${blueX}px ${blueY}px rgba(0,0,255,${opacity}))`;
+  return `blur(${blur}px) drop-shadow(${redX}px ${redY}px 4px rgba(255,0,0,${opacity})) drop-shadow(${blueX}px ${blueY}px 4px rgba(0,0,255,${opacity}))`;
 }
 
 export function Motion1Page() {
@@ -124,10 +124,10 @@ export function Motion1Page() {
   const iconStagger = params.enterDuration * params.iconStaggerFactor;
   const enterFilter = buildShadowFilter({
     blur: params.blurIn,
-    redX: -4,
-    redY: 4,
-    blueX: -8,
-    blueY: 8,
+    redX: 12,
+    redY: -12,
+    blueX: 16,
+    blueY: -16,
     opacity: 1,
   });
   const idleFilter = buildShadowFilter({
@@ -140,10 +140,10 @@ export function Motion1Page() {
   });
   const exitFilter = buildShadowFilter({
     blur: params.blurOut,
-    redX: -10,
-    redY: 10,
-    blueX: -12,
-    blueY: 12,
+    redX: -12,
+    redY: 12,
+    blueX: -16,
+    blueY: 16,
     opacity: 1,
   });
   const animationResetKey = JSON.stringify({
@@ -203,12 +203,46 @@ export function Motion1Page() {
                     ],
                   }}
                   transition={{
-                    ease: 'linear',
-                    duration: totalDuration,
-                    times: animationTimes,
-                    delay: iconIndex * iconStagger + index * totalDuration,
-                    repeat: Number.POSITIVE_INFINITY,
-                    repeatDelay: cycleGap,
+                    x: {
+                      ease: ['circOut', 'linear', 'circIn', 'linear'],
+                      duration: totalDuration,
+                      times: animationTimes,
+                      delay: iconIndex * iconStagger + index * totalDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: cycleGap,
+                    },
+                    y: {
+                      ease: ['circOut', 'linear', 'circIn', 'linear'],
+                      duration: totalDuration,
+                      times: animationTimes,
+                      delay: iconIndex * iconStagger + index * totalDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: cycleGap,
+                    },
+                    scale: {
+                      ease: ['circOut', 'linear', 'circIn', 'linear'],
+                      duration: totalDuration,
+                      times: animationTimes,
+                      delay: iconIndex * iconStagger + index * totalDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: cycleGap,
+                    },
+                    filter: {
+                      ease: 'linear',
+                      duration: totalDuration,
+                      times: animationTimes,
+                      delay: iconIndex * iconStagger + index * totalDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: cycleGap,
+                    },
+                    opacity: {
+                      ease: 'linear',
+                      duration: totalDuration,
+                      times: animationTimes,
+                      delay: iconIndex * iconStagger + index * totalDuration,
+                      repeat: Number.POSITIVE_INFINITY,
+                      repeatDelay: cycleGap,
+                    },
                   }}
                 >
                   <Icon />
