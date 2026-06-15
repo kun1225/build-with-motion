@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MotionM2PlantsWrapperRouteImport } from './routes/motion/m2-plants-wrapper'
 import { Route as MotionM1LogoMarqueeRouteImport } from './routes/motion/m1-logo-marquee'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MotionM2PlantsWrapperRoute = MotionM2PlantsWrapperRouteImport.update({
+  id: '/motion/m2-plants-wrapper',
+  path: '/motion/m2-plants-wrapper',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MotionM1LogoMarqueeRoute = MotionM1LogoMarqueeRouteImport.update({
@@ -26,27 +32,31 @@ const MotionM1LogoMarqueeRoute = MotionM1LogoMarqueeRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/motion/m1-logo-marquee': typeof MotionM1LogoMarqueeRoute
+  '/motion/m2-plants-wrapper': typeof MotionM2PlantsWrapperRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/motion/m1-logo-marquee': typeof MotionM1LogoMarqueeRoute
+  '/motion/m2-plants-wrapper': typeof MotionM2PlantsWrapperRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/motion/m1-logo-marquee': typeof MotionM1LogoMarqueeRoute
+  '/motion/m2-plants-wrapper': typeof MotionM2PlantsWrapperRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/motion/m1-logo-marquee'
+  fullPaths: '/' | '/motion/m1-logo-marquee' | '/motion/m2-plants-wrapper'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/motion/m1-logo-marquee'
-  id: '__root__' | '/' | '/motion/m1-logo-marquee'
+  to: '/' | '/motion/m1-logo-marquee' | '/motion/m2-plants-wrapper'
+  id: '__root__' | '/' | '/motion/m1-logo-marquee' | '/motion/m2-plants-wrapper'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   MotionM1LogoMarqueeRoute: typeof MotionM1LogoMarqueeRoute
+  MotionM2PlantsWrapperRoute: typeof MotionM2PlantsWrapperRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/motion/m2-plants-wrapper': {
+      id: '/motion/m2-plants-wrapper'
+      path: '/motion/m2-plants-wrapper'
+      fullPath: '/motion/m2-plants-wrapper'
+      preLoaderRoute: typeof MotionM2PlantsWrapperRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/motion/m1-logo-marquee': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   MotionM1LogoMarqueeRoute: MotionM1LogoMarqueeRoute,
+  MotionM2PlantsWrapperRoute: MotionM2PlantsWrapperRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
