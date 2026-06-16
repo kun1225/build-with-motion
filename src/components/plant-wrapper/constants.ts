@@ -1,11 +1,12 @@
-export const PLANT_CLUSTER_COUNT = 3;
+export const PLANT_CLUSTER_COUNT = 4;
+export const PLANT_CLUSTER_EDGE_BIAS = 0.85;
 
 export const PLANT_BASE_SPREAD = 10;
 export const PLANT_SPREAD_RANGE = 0.95;
 export const PLANT_LEAN_RANDOMNESS = 0.2;
 
-export const PLANT_LENGTH_MIN = 24;
-export const PLANT_LENGTH_VARIANCE = 64;
+export const PLANT_LENGTH_MIN = 32;
+export const PLANT_LENGTH_VARIANCE = 56;
 export const PLANT_LEAN_LENGTH_PENALTY = 0.45;
 export const PLANT_LENGTH_RANDOMNESS = 0.15;
 

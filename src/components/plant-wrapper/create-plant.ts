@@ -5,6 +5,7 @@ import {
   PLANT_BLADE_COUNT_MIN,
   PLANT_BLADE_COUNT_VARIANCE,
   PLANT_CLUSTER_COUNT,
+  PLANT_CLUSTER_EDGE_BIAS,
   PLANT_COLOR,
   PLANT_CURVE_STRENGTH_MIN,
   PLANT_CURVE_STRENGTH_VARIANCE,
@@ -89,14 +90,13 @@ export function createStem(options: CreateStemOptions): Stem {
 
 export function createGrassBlades(width: number, height: number): Stem[] {
   const stems: Stem[] = [];
+  const clusterBaseXList = createClusterBaseXList(
+    width,
+    PLANT_CLUSTER_COUNT,
+    PLANT_CLUSTER_EDGE_BIAS,
+  );
 
-  for (
-    let clusterIndex = 0;
-    clusterIndex < PLANT_CLUSTER_COUNT;
-    clusterIndex++
-  ) {
-    const clusterBaseX =
-      width * ((clusterIndex + 1) / (PLANT_CLUSTER_COUNT + 1));
+  for (const clusterBaseX of clusterBaseXList) {
     const clusterBaseY = height;
 
     const bladeCount =
@@ -114,6 +114,54 @@ export function createGrassBlades(width: number, height: number): Stem[] {
   }
 
   return stems;
+}
+
+function createClusterBaseXList(
+  width: number,
+  clusterCount: number,
+  edgeBias: number,
+) {
+  const edgePadding = Math.max(40, width * 0.08);
+  const minSeparation = Math.max(56, (width / (clusterCount + 1)) * 0.55);
+  const clusterBaseXList: number[] = [];
+
+  for (let clusterIndex = 0; clusterIndex < clusterCount; clusterIndex++) {
+    const fallbackX = width * ((clusterIndex + 1) / (clusterCount + 1));
+    let clusterBaseX = fallbackX;
+
+    for (let attempt = 0; attempt < 12; attempt++) {
+      const edgeBiasedRandom = applyEdgeBias(Math.random(), edgeBias);
+      const candidateX =
+        edgePadding + edgeBiasedRandom * Math.max(1, width - edgePadding * 2);
+      const hasCollision = clusterBaseXList.some(
+        (existingX) => Math.abs(existingX - candidateX) < minSeparation,
+      );
+
+      if (!hasCollision) {
+        clusterBaseX = candidateX;
+        break;
+      }
+    }
+
+    clusterBaseXList.push(clusterBaseX);
+  }
+
+  clusterBaseXList.sort((a, b) => a - b);
+  return clusterBaseXList;
+}
+
+function applyEdgeBias(value: number, edgeBias: number) {
+  if (edgeBias <= 0) return value
+
+  const centeredValue = (value - 0.5) * 2;
+  const side = centeredValue === 0 ? 1 : Math.sign(centeredValue);
+  const pushedValue =
+    Math.abs(centeredValue) ** (1 / (1 + edgeBias * 2.5));
+  const minimumOffset = edgeBias * 0.3;
+  const biasedValue =
+    side * (minimumOffset + (1 - minimumOffset) * pushedValue);
+
+  return biasedValue * 0.5 + 0.5;
 }
 
 function createGrassStem({
