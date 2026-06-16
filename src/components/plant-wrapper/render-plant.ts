@@ -1,64 +1,45 @@
-import type { GrassBlade, RenderGrassPoint, GrassEdgePoint } from './types';
+import type { Stem, RenderPoint, EdgePoint } from './types';
 import { PLANT_PARTIAL_SEGMENT_WIDTH_RATIO } from './constants';
 
-export function drawGrass(
-  ctx: CanvasRenderingContext2D,
-  blades: GrassBlade[],
-  width: number,
-  height: number,
-  progress = 1,
-) {
-  ctx.clearRect(0, 0, width, height);
-
-  for (const blade of blades) {
-    const bladeProgress = Math.max(
-      0,
-      Math.min(1, (progress - blade.growthDelay) / blade.growthSpan),
-    );
-
-    drawBlade(ctx, blade, bladeProgress);
-  }
-}
-
-function drawBlade(
-  ctx: CanvasRenderingContext2D,
-  blade: GrassBlade,
-  progress: number,
-) {
+function drawStem(ctx: CanvasRenderingContext2D, stem: Stem, progress: number) {
   const clampedProgress = Math.max(0, Math.min(1, progress));
   if (clampedProgress <= 0) return;
 
-  const totalLength = blade.points.reduce(
-    (sum, point) => sum + point.length,
-    0,
-  );
+  const totalLength = stem.totalLength;
   const drawnLength = totalLength * clampedProgress;
-  const centerPoints: RenderGrassPoint[] = [
+  const centerPoints: RenderPoint[] = [
     {
-      x: blade.baseX,
-      y: blade.baseY,
-      width: blade.points[0]?.width ?? 0,
+      x: stem.baseX,
+      y: stem.baseY,
+      width: stem.pointList[0]?.width ?? 0,
     },
   ];
 
-  let x = blade.baseX;
-  let y = blade.baseY;
+  let x = stem.baseX;
+  let y = stem.baseY;
   let accumulatedLength = 0;
+  const currentTipT = Math.max(0.001, drawnLength / totalLength);
+  const curlRemaining = stem.tipCurl * (1 - clampedProgress);
 
-  for (let i = 1; i < blade.points.length; i++) {
-    const point = blade.points[i];
+  for (let i = 1; i < stem.pointList.length; i++) {
+    const point = stem.pointList[i];
     if (accumulatedLength >= drawnLength) break;
 
     const remainingLength = drawnLength - accumulatedLength;
-    const segmentRatio = Math.min(1, remainingLength / point.length);
-    const segmentLength = point.length * segmentRatio;
+    const segmentRatio = Math.min(1, remainingLength / point.segmentLength);
+    const segmentLength = point.segmentLength * segmentRatio;
+    
     const width =
       segmentRatio < 1
         ? point.width * PLANT_PARTIAL_SEGMENT_WIDTH_RATIO
         : point.width;
+        
+    const relativeT = Math.min(1, point.t / currentTipT);
+    const curlT = Math.max(0, (relativeT - 0.5) / 0.5);
+    const angle = point.segmentAngle + curlRemaining * curlT * curlT * 3;
 
-    x += Math.cos(point.angle) * segmentLength;
-    y += Math.sin(point.angle) * segmentLength;
+    x += Math.cos(angle) * segmentLength;
+    y += Math.sin(angle) * segmentLength;
     centerPoints.push({
       x,
       y,
@@ -72,8 +53,8 @@ function drawBlade(
 
   if (centerPoints.length < 2) return;
 
-  const leftEdgePoints: GrassEdgePoint[] = [];
-  const rightEdgePoints: GrassEdgePoint[] = [];
+  const leftEdgePoints: EdgePoint[] = [];
+  const rightEdgePoints: EdgePoint[] = [];
 
   for (let i = 0; i < centerPoints.length; i++) {
     const currentPoint = centerPoints[i];
@@ -108,6 +89,25 @@ function drawBlade(
   }
 
   ctx.closePath();
-  ctx.fillStyle = blade.color;
+  ctx.fillStyle = stem.color;
   ctx.fill();
+}
+
+export function drawGrass(
+  ctx: CanvasRenderingContext2D,
+  blades: Stem[],
+  width: number,
+  height: number,
+  progress = 1,
+) {
+  ctx.clearRect(0, 0, width, height);
+
+  for (const blade of blades) {
+    const bladeProgress = Math.max(
+      0,
+      Math.min(1, (progress - blade.growthDelay) / blade.growthSpan),
+    );
+
+    drawStem(ctx, blade, bladeProgress);
+  }
 }

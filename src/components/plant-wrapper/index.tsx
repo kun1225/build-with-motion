@@ -1,5 +1,5 @@
 import { useLayoutEffect, useRef } from 'react';
-import type { GrassBlade } from './types';
+import type { Stem } from './types';
 import { initCanvas } from '#/lib/canvas';
 import { PLANT_GROWTH_DURATION_MS } from './constants';
 import { createGrassBlades } from './create-plant';
@@ -13,7 +13,7 @@ export function plantWrapper({ children }: { children: React.ReactNode }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const contextRef = useRef<CanvasRenderingContext2D | null>(null);
-  const bladesRef = useRef<GrassBlade[]>([]);
+  const bladesRef = useRef<Stem[]>([]);
   const sizeRef = useRef({ width: 0, height: 0 });
   const progressRef = useRef(0);
   const frameRef = useRef<number | null>(null);
@@ -89,12 +89,11 @@ export function plantWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <div ref={wrapperRef} className="relative">
-      {children}
-
       <canvas
         ref={canvasRef}
-        className="pointer-events-none absolute inset-0 size-full"
+        className="pointer-events-none absolute inset-0 z-10 size-full"
       />
+      {children}
     </div>
   );
 }

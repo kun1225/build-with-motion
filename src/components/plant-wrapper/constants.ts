@@ -1,6 +1,6 @@
 export const PLANT_CLUSTER_COUNT = 3;
 
-export const PLANT_BASE_SPREAD = 12;
+export const PLANT_BASE_SPREAD = 10;
 export const PLANT_SPREAD_RANGE = 0.95;
 export const PLANT_LEAN_RANDOMNESS = 0.2;
 
@@ -9,13 +9,15 @@ export const PLANT_LENGTH_VARIANCE = 64;
 export const PLANT_LEAN_LENGTH_PENALTY = 0.45;
 export const PLANT_LENGTH_RANDOMNESS = 0.15;
 
-export const PLANT_CURVE_STRENGTH_MIN = 0.35;
-export const PLANT_CURVE_STRENGTH_VARIANCE = 0.55;
+export const PLANT_CURVE_STRENGTH_MIN = 0.2;
+export const PLANT_CURVE_STRENGTH_VARIANCE = 0.4;
 
-export const PLANT_WOBBLE_FREQUENCY_MIN = 2;
-export const PLANT_WOBBLE_FREQUENCY_VARIANCE = 3;
-export const PLANT_WOBBLE_STRENGTH_MIN = 0.03;
+export const PLANT_WOBBLE_FREQUENCY_MIN = 0;
+export const PLANT_WOBBLE_FREQUENCY_VARIANCE = 1;
+export const PLANT_WOBBLE_STRENGTH_MIN = 0.04;
 export const PLANT_WOBBLE_STRENGTH_VARIANCE = 0.1;
+export const PLANT_TIP_CURL_MIN = 0.6;
+export const PLANT_TIP_CURL_VARIANCE = 1.1;
 
 export const PLANT_POINT_COUNT_MIN = 6;
 export const PLANT_POINT_COUNT_VARIANCE = 12;
@@ -25,11 +27,11 @@ export const PLANT_TIP_WIDTH = 0.35;
 export const PLANT_PARTIAL_SEGMENT_WIDTH_RATIO = 0.55;
 
 export const PLANT_BLADE_COUNT_MIN = 6;
-export const PLANT_BLADE_COUNT_VARIANCE = 10;
+export const PLANT_BLADE_COUNT_VARIANCE = 6;
 
-export const PLANT_GROWTH_DELAY_MAX = 0.38;
-export const PLANT_GROWTH_SPAN_MIN = 0.45;
-export const PLANT_GROWTH_SPAN_VARIANCE = 0.4;
+export const PLANT_GROWTH_DELAY_MAX = 0.6;
+export const PLANT_GROWTH_SPAN_MIN = 0.4;
+export const PLANT_GROWTH_SPAN_VARIANCE = 0.6;
 export const PLANT_GROWTH_DURATION_MS = 2400;
 
 export const PLANT_COLOR = 'rgba(112, 153, 88, 0.5)';
