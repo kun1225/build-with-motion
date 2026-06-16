@@ -1,4 +1,5 @@
 import type { GrassBlade, RenderGrassPoint, GrassEdgePoint } from './types';
+import { PLANT_PARTIAL_SEGMENT_WIDTH_RATIO } from './constants';
 
 export function drawGrass(
   ctx: CanvasRenderingContext2D,
@@ -51,7 +52,10 @@ function drawBlade(
     const remainingLength = drawnLength - accumulatedLength;
     const segmentRatio = Math.min(1, remainingLength / point.length);
     const segmentLength = point.length * segmentRatio;
-    const width = segmentRatio < 1 ? point.width * 0.55 : point.width;
+    const width =
+      segmentRatio < 1
+        ? point.width * PLANT_PARTIAL_SEGMENT_WIDTH_RATIO
+        : point.width;
 
     x += Math.cos(point.angle) * segmentLength;
     y += Math.sin(point.angle) * segmentLength;

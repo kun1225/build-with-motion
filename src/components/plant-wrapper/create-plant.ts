@@ -1,15 +1,46 @@
 import type { GrassBlade, GrassPoint } from './types';
+import {
+  PLANT_BASE_SPREAD,
+  PLANT_BASE_WIDTH,
+  PLANT_BLADE_COUNT_MIN,
+  PLANT_BLADE_COUNT_VARIANCE,
+  PLANT_CLUSTER_COUNT,
+  PLANT_COLOR,
+  PLANT_CURVE_STRENGTH_MIN,
+  PLANT_CURVE_STRENGTH_VARIANCE,
+  PLANT_GROWTH_DELAY_MAX,
+  PLANT_GROWTH_SPAN_MIN,
+  PLANT_GROWTH_SPAN_VARIANCE,
+  PLANT_LEAN_LENGTH_PENALTY,
+  PLANT_LEAN_RANDOMNESS,
+  PLANT_LENGTH_MIN,
+  PLANT_LENGTH_RANDOMNESS,
+  PLANT_LENGTH_VARIANCE,
+  PLANT_POINT_COUNT_MIN,
+  PLANT_POINT_COUNT_VARIANCE,
+  PLANT_SPREAD_RANGE,
+  PLANT_TIP_WIDTH,
+  PLANT_WOBBLE_FREQUENCY_MIN,
+  PLANT_WOBBLE_FREQUENCY_VARIANCE,
+  PLANT_WOBBLE_STRENGTH_MIN,
+  PLANT_WOBBLE_STRENGTH_VARIANCE,
+} from './constants';
 
 export function createGrassBlades(width: number, height: number): GrassBlade[] {
   const blades: GrassBlade[] = [];
 
-  const clusterCount = 3;
-
-  for (let clusterIndex = 0; clusterIndex < clusterCount; clusterIndex++) {
-    const clusterBaseX = width * ((clusterIndex + 1) / (clusterCount + 1));
+  for (
+    let clusterIndex = 0;
+    clusterIndex < PLANT_CLUSTER_COUNT;
+    clusterIndex++
+  ) {
+    const clusterBaseX =
+      width * ((clusterIndex + 1) / (PLANT_CLUSTER_COUNT + 1));
     const clusterBaseY = height;
 
-    const bladeCount = 6 + Math.floor(Math.random() * 10);
+    const bladeCount =
+      PLANT_BLADE_COUNT_MIN +
+      Math.floor(Math.random() * PLANT_BLADE_COUNT_VARIANCE);
 
     for (let bladeIndex = 0; bladeIndex < bladeCount; bladeIndex++) {
       const blade = createBlade({
@@ -42,32 +73,44 @@ function createBlade({
     count: number;
   };
 }) {
-  const baseSpread = 12;
-
-  const baseX = clusterBase.x + (Math.random() - 0.5) * baseSpread * 2;
-  const baseY = clusterBase.y + Math.random() * baseSpread * 0.3;
+  const baseX =
+    clusterBase.x + (Math.random() - 0.5) * PLANT_BASE_SPREAD * 2;
+  const baseY = clusterBase.y + Math.random() * PLANT_BASE_SPREAD * 0.3;
 
   const spread =
     bladeConfig.count > 1
-      ? -0.95 + (bladeConfig.index / (bladeConfig.count - 1)) * 1.9
+      ? -PLANT_SPREAD_RANGE +
+        (bladeConfig.index / (bladeConfig.count - 1)) *
+          (PLANT_SPREAD_RANGE * 2)
       : 0;
 
-  const lean = spread + (Math.random() - 0.5) * 0.2;
+  const lean = spread + (Math.random() - 0.5) * PLANT_LEAN_RANDOMNESS;
 
-  const leanRatio = Math.abs(lean) / 0.95;
-  const totalLength = 24 + Math.random() * 64;
+  const leanRatio = Math.abs(lean) / PLANT_SPREAD_RANGE;
+  const totalLength = PLANT_LENGTH_MIN + Math.random() * PLANT_LENGTH_VARIANCE;
 
   const bladeLength =
-    totalLength * (1 - leanRatio * 0.45 + Math.random() * 0.15);
+    totalLength *
+    (1 -
+      leanRatio * PLANT_LEAN_LENGTH_PENALTY +
+      Math.random() * PLANT_LENGTH_RANDOMNESS);
 
   const curveDirection = Math.sign(lean || Math.random() - 0.5) || 1;
-  const curveStrength = 0.35 + Math.random() * 0.55;
+  const curveStrength =
+    PLANT_CURVE_STRENGTH_MIN +
+    Math.random() * PLANT_CURVE_STRENGTH_VARIANCE;
 
-  const wobbleFrequency = 2 + Math.random() * 3;
+  const wobbleFrequency =
+    PLANT_WOBBLE_FREQUENCY_MIN +
+    Math.random() * PLANT_WOBBLE_FREQUENCY_VARIANCE;
   const wobblePhase = Math.random() * Math.PI * 2;
-  const wobbleStrength = 0.03 + Math.random() * 0.1;
+  const wobbleStrength =
+    PLANT_WOBBLE_STRENGTH_MIN +
+    Math.random() * PLANT_WOBBLE_STRENGTH_VARIANCE;
 
-  const pointCount = Math.floor(Math.random() * 12) + 6;
+  const pointCount =
+    Math.floor(Math.random() * PLANT_POINT_COUNT_VARIANCE) +
+    PLANT_POINT_COUNT_MIN;
   const segmentLength = bladeLength / pointCount;
   const points: GrassPoint[] = [];
 
@@ -81,7 +124,8 @@ function createBlade({
       Math.sin(progressAlongBlade * wobbleFrequency + wobblePhase) *
         wobbleStrength;
 
-    const width = 3.8 * (1 - progressAlongBlade) + 0.35;
+    const width =
+      PLANT_BASE_WIDTH * (1 - progressAlongBlade) + PLANT_TIP_WIDTH;
 
     points.push({
       angle,
@@ -95,8 +139,8 @@ function createBlade({
     baseX,
     baseY,
     points,
-    color: 'rgba(112, 153, 88, 0.5)',
-    growthDelay: Math.random() * 0.38,
-    growthSpan: 0.45 + Math.random() * 0.4,
+    color: PLANT_COLOR,
+    growthDelay: Math.random() * PLANT_GROWTH_DELAY_MAX,
+    growthSpan: PLANT_GROWTH_SPAN_MIN + Math.random() * PLANT_GROWTH_SPAN_VARIANCE,
   };
 }

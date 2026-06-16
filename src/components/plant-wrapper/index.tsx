@@ -1,6 +1,7 @@
 import { useLayoutEffect, useRef } from 'react';
 import type { GrassBlade } from './types';
 import { initCanvas } from '#/lib/canvas';
+import { PLANT_GROWTH_DURATION_MS } from './constants';
 import { createGrassBlades } from './create-plant';
 import { drawGrass } from './render-plant';
 
@@ -53,12 +54,11 @@ export function plantWrapper({ children }: { children: React.ReactNode }) {
 
     const startGrowth = () => {
       cancelFrame();
-      const duration = 2400;
       const startTime = performance.now();
 
       const tick = (now: number) => {
         const elapsed = now - startTime;
-        const rawProgress = Math.min(1, elapsed / duration);
+        const rawProgress = Math.min(1, elapsed / PLANT_GROWTH_DURATION_MS);
         const easedProgress = easeOutCubic(rawProgress);
         progressRef.current = easedProgress;
         drawFrame(easedProgress);
